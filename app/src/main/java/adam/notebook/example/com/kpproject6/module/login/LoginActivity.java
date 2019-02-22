@@ -13,6 +13,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import adam.notebook.example.com.kpproject6.GeneralUtility.PreferenceUtils.PreferenceKey;
+import adam.notebook.example.com.kpproject6.GeneralUtility.PreferenceUtils.PreferenceUtils;
+import adam.notebook.example.com.kpproject6.GeneralUtility.Utils;
+import adam.notebook.example.com.kpproject6.MyApplication;
 import adam.notebook.example.com.kpproject6.R;
 import adam.notebook.example.com.kpproject6.TablayoutActivity;
 import adam.notebook.example.com.kpproject6.service.login.LoginPresenter;
@@ -27,7 +31,6 @@ import butterknife.OnClick;
 public class LoginActivity extends AppCompatActivity implements ServiceCallback {
 
     private String TAG = LoginActivity.class.getSimpleName();
-//    private PreferenceUtils pref = MyApplication.pref;
 
     @BindView(R.id.edit_emaillogin)
     EditText editEmail;
@@ -43,6 +46,7 @@ public class LoginActivity extends AppCompatActivity implements ServiceCallback 
     ProgressBar progressBar;
 
     private boolean isPasswordVisible = false;
+    private PreferenceUtils pref = MyApplication.pref;
 
 
     @Override
@@ -51,17 +55,7 @@ public class LoginActivity extends AppCompatActivity implements ServiceCallback 
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
 
-//        pref.putBoolean(PreferenceKey.IsNotFirstUse, true);
-//        setupView();}
-
-
-//    private void setupView() {
-//        im_Hide.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-//            @Override
-//            public void onFocusChange(View v, boolean hasFocus) {
-//                im_Hide.setVisibility(hasFocus ? View.VISIBLE : View.GONE);
-//            }
-//        });
+        pref.putBoolean(PreferenceKey.IsNotFirstUse, true);
 
         imHide.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,11 +75,20 @@ public class LoginActivity extends AppCompatActivity implements ServiceCallback 
 
     @OnClick(R.id.btn_login)
     public void login(View view) {
-        final String email = editEmail.getText().toString();
+        final String useremail = editEmail.getText().toString();
         final String password = editPassword.getText().toString();
-        if (email.isEmpty() || password.isEmpty()) {
+        if (useremail.isEmpty() || password.isEmpty()) {
             Toast.makeText(this, "Masukkan email dan password", Toast.LENGTH_SHORT).show();
             return;
+        }
+        if (!Utils.isValidEmail(useremail)) {
+            Toast.makeText(this, "Email yang anda masukkan tidak valid", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String email = "";
+        if (useremail.contains("@")){
+            email = useremail;
         }
 
         LoginPresenter.login(email, password, this);

@@ -86,6 +86,12 @@ public class LoginActivity extends AppCompatActivity implements ServiceCallback 
             return;
         }
 
+        if (password.length() < 6) {
+            editPassword.setError("Password should be atleast 6 character long");
+            editPassword.requestFocus();
+            return;
+        }
+
         String email = "";
         if (useremail.contains("@")){
             email = useremail;
@@ -114,7 +120,7 @@ public class LoginActivity extends AppCompatActivity implements ServiceCallback 
     @Override
     public void onFailed(String message) {
         LogUtility.logging(TAG, LogUtility.errorLog, "initListeners", "btn_Login.setOnClickListener", message);
-        Toast.makeText(LoginActivity.this, "Login Berhasil", Toast.LENGTH_SHORT).show();
+        Toast.makeText(LoginActivity.this, "Login gagal", Toast.LENGTH_SHORT).show();
     }
 
     @Override
